@@ -1,0 +1,7 @@
+CREATE TABLE `link` (
+  `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `chinese` VARCHAR(255) NOT NULL UNIQUE COMMENT '中文关键词',
+  `pinyin` VARCHAR(255) NOT NULL COMMENT '拼音短链',
+  `count` INT NOT NULL DEFAULT 0 COMMENT '访问次数',
+  `last_visited_at` DATETIME DEFAULT NULL COMMENT '最后访问时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
