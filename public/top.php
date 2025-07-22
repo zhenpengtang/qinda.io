@@ -1,15 +1,15 @@
 <?php
-$pageTitle = '最近访问';
+$pageTitle = '最常访问';
 require_once 'header.php';
 require_once 'db.php';
 
-$stmt = $pdo->query("SELECT chinese, pinyin, count, last_visited FROM link ORDER BY last_visited DESC LIMIT 10");
-$recentLinks = $stmt->fetchAll();
+$stmt = $pdo->query("SELECT chinese, pinyin, count, last_visited FROM link ORDER BY count DESC LIMIT 10");
+$topLinks = $stmt->fetchAll();
 ?>
 
-<h2>🕒 最近访问</h2>
-<ul class="list-group">
-  <?php foreach ($recentLinks as $row): ?>
+<h2>📈 最常访问</h2>
+<ul class="list-group mb-4">
+  <?php foreach ($topLinks as $row): ?>
     <li class="list-group-item d-flex justify-content-between align-items-center">
       <div>
         <strong><?= htmlspecialchars($row['chinese']) ?></strong><br>
@@ -18,7 +18,7 @@ $recentLinks = $stmt->fetchAll();
         </a></small><br>
         <small class="text-muted">最近访问：<?= htmlspecialchars($row['last_visited']) ?></small>
       </div>
-      <span class="badge bg-secondary rounded-pill"><?= $row['count'] ?> 次</span>
+      <span class="badge bg-primary rounded-pill"><?= $row['count'] ?> 次</span>
     </li>
   <?php endforeach; ?>
 </ul>
