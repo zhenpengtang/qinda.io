@@ -14,7 +14,7 @@ $topLinks = $stmt->fetchAll();
       <div>
         <strong><?= htmlspecialchars($row['chinese']) ?></strong><br>
         <small><a href="jump.php?name=<?= urlencode($row['chinese']) ?>" target="_blank">
-          https://yw.ip2.one/<?= htmlspecialchars($row['pinyin']) ?>
+          https://topic.ip2.one/<?= htmlspecialchars($row['pinyin']) ?>
         </a></small><br>
         <small class="text-muted">最近访问：<?= htmlspecialchars($row['last_visited']) ?></small>
       </div>

@@ -24,5 +24,5 @@ $update->execute([$name]);
 
 // 跳转
 $pinyin = $row['pinyin'];
-header("Location: https://yw.ip2.one/{$pinyin}");
+header("Location: https://topic.ip2.one/{$pinyin}");
 exit;

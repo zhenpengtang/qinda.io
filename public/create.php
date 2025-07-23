@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare("INSERT INTO link (chinese, pinyin, count, last_visited) VALUES (?, ?, 0, NOW())");
             $stmt->execute([$chinese, $pinyinResult]);
             $success = true;
-            $link = "https://yw.ip2.one/" . htmlspecialchars($pinyinResult);
+            $link = "https://topic.ip2.one/" . htmlspecialchars($pinyinResult);
         } catch (PDOException $e) {
             if ($e->getCode() == 23000) {
                 $error = "❌ 拼音短链已存在，请更换中文内容或拼音。";
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
-    <title>创建短链</title>
+    <title>创建topic.ip2.one索引</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <script>
         async function updatePinyin() {
@@ -50,21 +50,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             const response = await fetch('pinyin_api.php?text=' + encodeURIComponent(chinese));
             const pinyin = await response.text();
-            document.getElementById('pinyin').value = pinyin;
-            document.getElementById('linkPreview').textContent = 'https://yw.ip2.one/' + pinyin;
+            if (pinyin && chinese) {
+    document.getElementById('pinyin').value = pinyin;
+    document.getElementById('linkPreview').innerHTML =
+        '<a href="jump.php?name=' + encodeURIComponent(chinese) + '" target="_blank">' +
+        'https://topic.ip2.one/' + pinyin +
+        '</a>';
+} else {
+    document.getElementById('linkPreview').innerHTML = '';
+}
+
         }
     </script>
 </head>
 <body class="bg-light">
 <div class="container py-5">
     <div class="card shadow p-4 mx-auto" style="max-width: 480px;">
-        <h2 class="mb-4 text-center">创建中文短链</h2>
+        <h2 class="mb-4 text-center">创建topic.ip2.one中文索引</h2>
 
         <?php if ($error): ?>
             <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
         <?php elseif ($success): ?>
             <div class="alert alert-success">
-                ✅ 创建成功！短链：
+                ✅ 创建成功！索引：
                 <a href="<?= $link ?>" target="_blank"><?= $link ?></a>
             </div>
         <?php endif; ?>
@@ -83,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="mb-3">
                 <label class="form-label">短链预览</label>
                 <div id="linkPreview" class="text-primary fw-bold" style="word-break: break-all;">
-                    <?= $pinyinResult ? 'https://yw.ip2.one/' . htmlspecialchars($pinyinResult) : '' ?>
+                    <?= $pinyinResult ? 'https://topic.ip2.one/' . htmlspecialchars($pinyinResult) : '' ?>
                 </div>
             </div>
 
