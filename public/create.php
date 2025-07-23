@@ -4,7 +4,6 @@ require_once __DIR__ . '/db.php';  // 使用统一的数据库连接
 require 'vendor/autoload.php';
 use Overtrue\Pinyin\Pinyin;
 
-
 $chinese = '';
 $pinyinResult = '';
 $link = '';
@@ -22,7 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare("INSERT INTO link (chinese, pinyin, count, last_visited) VALUES (?, ?, 0, NOW())");
             $stmt->execute([$chinese, $pinyinResult]);
             $success = true;
-            $link = "https://topic.ip2.one/" . htmlspecialchars($pinyinResult);
+            // 显示链接是拼音路径
+            $link = "https://topic.ip2.one/" . $pinyinResult;
         } catch (PDOException $e) {
             if ($e->getCode() == 23000) {
                 $error = "❌ 拼音短链已存在，请更换中文内容或拼音。";
@@ -51,15 +51,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const response = await fetch('pinyin_api.php?text=' + encodeURIComponent(chinese));
             const pinyin = await response.text();
             if (pinyin && chinese) {
-    document.getElementById('pinyin').value = pinyin;
-    document.getElementById('linkPreview').innerHTML =
-        '<a href="jump.php?name=' + encodeURIComponent(chinese) + '" target="_blank">' +
-        'https://topic.ip2.one/' + pinyin +
-        '</a>';
-} else {
-    document.getElementById('linkPreview').innerHTML = '';
-}
-
+                document.getElementById('pinyin').value = pinyin;
+                // 预览显示拼音路径，跳转链接传中文
+                document.getElementById('linkPreview').innerHTML =
+                    '<a href="jump.php?name=' + encodeURIComponent(chinese) + '" target="_blank">' +
+                    'https://topic.ip2.one/' + pinyin +
+                    '</a>';
+            } else {
+                document.getElementById('linkPreview').innerHTML = '';
+            }
         }
     </script>
 </head>
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php elseif ($success): ?>
             <div class="alert alert-success">
                 ✅ 创建成功！索引：
-                <a href="<?= $link ?>" target="_blank"><?= $link ?></a>
+                <a href="jump.php?name=<?= urlencode($chinese) ?>" target="_blank"><?= htmlspecialchars($link) ?></a>
             </div>
         <?php endif; ?>
 
@@ -91,7 +91,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="mb-3">
                 <label class="form-label">短链预览</label>
                 <div id="linkPreview" class="text-primary fw-bold" style="word-break: break-all;">
-                    <?= $pinyinResult ? 'https://topic.ip2.one/' . htmlspecialchars($pinyinResult) : '' ?>
+                    <?php if ($pinyinResult): ?>
+                        <a href="jump.php?name=<?= urlencode($chinese) ?>" target="_blank">
+                            <?= 'https://topic.ip2.one/' . htmlspecialchars($pinyinResult) ?>
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
 
